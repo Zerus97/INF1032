@@ -27,3 +27,6 @@ resposta = teste["quality"] # Separa a resposta
 teste = teste.drop(["quality"]) # Exclui a coluna da variável dapendente
 prediction = regr.predict([teste.values]) # Passa os valores para o modelo
 print("Valor esperado: " + str(resposta) + "\nValor encontrado: "+ str((prediction[0][0])) + "\nValor com round: " + str(round(prediction[0][0])))
+
+df_corr = df.corr() # Verifica a relação entre as variáveis
+print(df_corr["quality"]) # Mostra quais variáveis tem mais peso na determinação da qualidade
