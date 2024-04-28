@@ -5,15 +5,15 @@ import sklearn.metrics
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
-df = pd.read_csv("winequality-red.csv")
-print(df.head())
+data_path = "cal_housing.csv"
+dependent_var = "median_house_value"
+t = 60*30
 
-X = df.drop(columns=['quality'])
-y = df['quality']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-t = 60*15
+df = pd.read_csv(data_path)
+#print(df.head())
+X = df.drop(columns=[dependent_var])
+y = df[dependent_var]
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)
 automl = autosklearn.regression.AutoSklearnRegressor(time_left_for_this_task=t) 
 automl.fit(X_train, y_train)
 print(automl.leaderboard())
@@ -28,9 +28,15 @@ plt.scatter(test_predictions, y_test, label="Test samples", c="#7570b3")
 plt.xlabel("Predicted value")
 plt.ylabel("True value")
 plt.legend()
-plt.plot([0, 10], [0, 10], c="k", zorder=0)
-plt.xlim([0, 10])
-plt.ylim([0, 10])
+
+min_val = min(min(train_predictions), min(test_predictions), min(y_train), min(y_test))
+max_val = max(max(train_predictions), max(test_predictions), max(y_train), max(y_test))
+plt.plot([min_val, max_val], [min_val, max_val], c="k", zorder=0)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.autoscale(enable=True, axis='both', tight=True)
+
 plt.tight_layout()
-plt.show()
+
 plt.savefig("plot_"  + str(t) + "t.png")
+
+plt.show()
